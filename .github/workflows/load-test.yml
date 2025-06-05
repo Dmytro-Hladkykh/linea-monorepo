@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   run-load-test:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     name: Run Load Test
     steps:
       - name: Checkout

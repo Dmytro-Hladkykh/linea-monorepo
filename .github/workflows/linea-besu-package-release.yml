@@ -8,8 +8,6 @@ on:
       - '.github/workflows/linea-besu-package-release.yml'
       - '.github/workflows/reuse-linea-besu-package-*.yml'
   push:
-    branches:
-      - main
     paths:
       - 'linea-besu-package/**'
       - '.github/actions/linea-besu-package/**'
@@ -42,7 +40,7 @@ permissions:
 
 jobs:
   filter-commit-changes:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     name: Filter commit changes
     if: ${{ github.event_name != 'workflow_dispatch' }}
     outputs:

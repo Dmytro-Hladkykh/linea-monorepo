@@ -99,7 +99,7 @@ runs:
       id: dockerimage
       shell: bash
       run: |
-        echo "dockerimage=consensys/linea-besu-package:${{ steps.dockertag.outputs.dockertag }}" >> "$GITHUB_OUTPUT"
+        echo "dockerimage=dmytrohladkykh/linea-besu-package:${{ steps.dockertag.outputs.dockertag }}" >> "$GITHUB_OUTPUT"
         
     - name: download and untar the linea-besu archive
       shell: bash

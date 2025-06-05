@@ -2,16 +2,13 @@ name: main
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 jobs:
   store-image-name-and-tags:
     uses: ./.github/workflows/reuse-store-image-name-and-tags.yml
 
   filter-commit-changes:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     name: Filter commit changes
     outputs:
       changed-file-count: ${{ steps.filter.outputs.all_count }}
@@ -169,7 +166,7 @@ jobs:
       contracts_excluding_local_deployment_artifacts_count: ${{ needs.filter-commit-changes.outputs.contracts-excluding-local-deployment-artifacts-count }}
 
   manual-docker-build-and-e2e-tests:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     needs: [ store-image-name-and-tags, check-and-tag-images, get-has-changes-requiring-e2e-testing ]
     if: ${{ needs.get-has-changes-requiring-e2e-testing.outputs.has-changes-requiring-e2e-testing == 'true' }}
     environment: ${{ github.ref != 'refs/heads/main' && 'docker-build-and-e2e' || '' }}
@@ -232,7 +229,7 @@ jobs:
   cleanup-deployments:
     needs: [ run-e2e-tests ]
     if: ${{ always() }}
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     steps:
       - uses: strumwolf/delete-deployment-environment@v3
         with:

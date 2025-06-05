@@ -2,7 +2,7 @@ name: Export Security Report to CSV
 on: workflow_dispatch
 jobs:
   data_gathering:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-small
+    runs-on: ubuntu-latest
     steps:
       - name: CSV export
         uses: advanced-security/ghas-to-csv@v2

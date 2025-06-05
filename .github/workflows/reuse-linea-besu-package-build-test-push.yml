@@ -28,7 +28,7 @@ on:
 
 jobs:
   build-and-upload-artifact:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-med
+    runs-on: ubuntu-latest
     if: ${{ inputs.run_test || inputs.run_e2e_test }}
     environment: dockerhub
     outputs:
@@ -68,12 +68,12 @@ jobs:
           load: true
           push: false
           tags: |
-            consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }}
+            dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }}
       
       - name: Save Docker image as artifact
         run: |
           docker images
-          docker save consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }} | gzip > linea-besu-package-image.tar.gz
+          docker save dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }} | gzip > linea-besu-package-image.tar.gz
         shell: bash
 
       - name: Upload Docker image artifact
@@ -109,7 +109,7 @@ jobs:
   build-and-push-dockerhub:
     needs: [ run-test, run-e2e-tests ]
     if: ${{ always() && !cancelled() && inputs.push_image && (inputs.skip_e2e_test || needs.run-e2e-test.result == 'skipped' || needs.run-e2e-tests.outputs.tests_outcome == 'success') && (needs.run-test.result == 'skipped' || needs.run-test.result == 'success') }}
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-med
+    runs-on: ubuntu-latest
     environment: dockerhub
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -159,29 +159,29 @@ jobs:
             BUILD_DATE=${{ steps.assemble.outputs.build_date }}
           push: true
           tags: |
-            consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }}
-            ${{ github.ref == 'refs/heads/main' && 'consensys/linea-besu-package:develop' || '' }}
-            ${{ github.event_name == 'workflow_dispatch' && 'consensys/linea-besu-package:latest' || '' }}
+            dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }}
+            ${{ github.ref == 'refs/heads/main' && 'dmytrohladkykh/linea-besu-package:develop' || '' }}
+            ${{ github.event_name == 'workflow_dispatch' && 'dmytrohladkykh/linea-besu-package:latest' || '' }}
 
       ### update the release notes with docker hashes
       - name: create the release notes and then the release
         id: release_create_artifacts
         run: |
           cd release
-          MANIFEST=$(docker manifest inspect consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }})
+          MANIFEST=$(docker manifest inspect dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }})
           if [ $? -eq 0 ]; then
             echo "### Docker Image Details" >> output.md
             echo "" >> output.md
             echo "To pull the image, use the following command:" >> output.md
             echo "\`\`\`" >> output.md
-            echo "docker pull consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }}" >> output.md
+            echo "docker pull dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }}" >> output.md
             echo "\`\`\`" >> output.md
             echo "" >> output.md
             echo "| Digest | OS | Architecture |" >> output.md
             echo "|--------|----|--------------|" >> output.md
             echo "$MANIFEST" | jq -r '.manifests[] | select(.platform.architecture != "unknown" and .platform.os != "unknown") | "| \(.digest) | \(.platform.os) | \(.platform.architecture) |"' >> output.md
           else
-            echo "Docker image consensys/linea-besu-package:${{ steps.assemble.outputs.dockertag }} does not exist on dockerhub"
+            echo "Docker image dmytrohladkykh/linea-besu-package:${{ steps.assemble.outputs.dockertag }} does not exist on dockerhub"
             exit 1
           fi
 

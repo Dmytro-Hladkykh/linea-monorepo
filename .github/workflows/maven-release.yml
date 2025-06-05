@@ -13,7 +13,7 @@ on:
 
 jobs:
   release:
-    runs-on: gha-runner-scale-set-ubuntu-22.04-amd64-med
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
